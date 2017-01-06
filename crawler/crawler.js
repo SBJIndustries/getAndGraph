@@ -1,13 +1,12 @@
 var Crawler = require('js-crawler');
-const emitter = new EventEmitter()
 
-emitter.setMaxListeners(100)
-new Crawler().configure({maxRequestsPerSecond: 2,  maxConcurrentRequests: 1}).crawl({
-  url: "http://www.nytimes.com/",
-  success: function(page) {
+var urls = ["https://github.com", "https://www.nytimes.com"]
+for (var i = 0; i<urls.length; i++){
+new Crawler().configure({depth: 2})// we are just looking to get the article code
+  .crawl(urls[i], function onSuccess(page) {
     console.log(page.url);
-  },
-  failure: function(page) {
-    console.log(page.status);
-  }
-});
+  }, null, function onAllFinished(crawledUrls) {
+    console.log('All crawling finished');
+    //console.log(crawledUrls); // we want to store this value
+  });
+}
