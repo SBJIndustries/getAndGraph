@@ -1,6 +1,8 @@
 var unirest = require('unirest');
 var express = require('express');
 
+var key = "f1sja7zDUi7Yy5qxskks";
+
 var app = express();
 app.set('views', '.');
 app.set("view engine", "pug");
@@ -12,45 +14,24 @@ app.get("/",function(req,res){
 app.get("/data",function(req,res){
     var inputTicker = req.query.inputTicker;
     data(inputTicker, function(response) {
-        res.json(response.raw_body);
+        res.json(response);
     })
-});
-app.get("/settings",function(req,res){
-	var period = req.query.period; //day, month, year etc.
-	var NumberOfDays = req.query.NumberOfDays; //number of days to search back for data
-	var Type = req.query.Type; //price, sma etc.
-	var Params = req.query.Type;
-
-	var inputParams = {
-		NOD: NumberOfDays,
-		PD: period,
-		TP: type,
-		PMS: params
-	}
 });
 
 function data(inTicker, cb)
 {
 
 	var input = {
-		Normalized: false,
-		NumberOfDays: 20,
-		DataInterval: 0,
-		DataPeriod: "Day",
-		Elements: [{Symbol: inTicker, Type: "price", Params: ["c"]}]
+		database: "WIKI",
+		dataset: inTicker,
+		startDate: '2016-10-01',
+		collapse: 'monthly',
+		transform: 'rdiff'
 	}
 
-	unirest.get('http://dev.markitondemand.com/MODApis/Api/v2/InteractiveChart/json?parameters=' + JSON.stringify(input)).headers({
-		'Accept': 'application/json'
-		, 'Content-Type': 'application/json'
-		}).end(function (response) {
-			cb(response);
-		});
+	unirest.get("https://www.quandl.com/api/v3/datasets/"+input.database+"/"+input.dataset+".json?start_date="+input.startDate+"&collapse="+input.collapse+"&transform="+input.transform+"&api_key="+key)
+	.end(function (response) {
+			cb(response.body);
+	});
 }
-
-if(true)//test output
-{
-	data("AAPL", function(response) {
-         console.log(response.raw_body);
-     })
-}
+app.listen(8080);
