@@ -26,7 +26,7 @@ function data(inTicker, cb)
 		dataset: inTicker,
 		startDate: '2016-10-01',
 		collapse: 'monthly',
-		transform: 'rdiff'
+		transform: 'none'
 	}
 
 	unirest.get("https://www.quandl.com/api/v3/datasets/"+input.database+"/"+input.dataset+".json?start_date="+input.startDate+"&collapse="+input.collapse+"&transform="+input.transform+"&api_key="+key)
