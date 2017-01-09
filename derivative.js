@@ -1,16 +1,13 @@
-// check this link out
-//http://stackoverflow.com/questions/6399777/looking-for-derivative-script
+var derivative = require('math-lib');
 
-var inputFunction = "x^2+3";
-var parsedFunction = inputFunction.split("+");
-console.log(parsedFunction);
-// x^2  derivative = 2x
-for(i=0;i<parsedFunction.length;i++){
-  var finalParse = parsedFunction[i].split("^");
-//  for(j=0; j< finalParse.length;i++){
+function takeDerivative(equation, xValue){
 
-console.log(finalParse);
-
-  //}
-
+console.log('foo1', derivative().computeSecondDerivative(function(x) {
+  return equation
+  return x*x;
+}, xValue));
 }
+
+// console.log('foo1', derivative().computeSecondDerivative(function(x) {
+//   return x*x;
+// }, 4));
