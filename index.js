@@ -13,20 +13,23 @@ app.get("/",function(req,res){
 
 app.get("/data",function(req,res){
     var inputTicker = req.query.inputTicker;
-    data(inputTicker, function(response) {
+    var inputStartDate = req.query.inputStartDate;
+    var inputCollapse = req.query.inputCollapse;
+    var inputTransform = req.query.inputTransform;
+    data(inputTicker,inputStartDate,inputCollapse,inputTransform, function(response) {
         res.json(response);
     })
 });
 
-function data(inTicker, cb)
+function data(inTicker,inStartDate,inCollapse,inTransform, cb)
 {
 
 	var input = {
 		database: "WIKI",
 		dataset: inTicker,
-		startDate: '2016-10-01',
-		collapse: 'monthly',
-		transform: 'none'
+		startDate: inStartDate,
+		collapse: inCollapse,
+		transform: inTransform
 	}
 
 	unirest.get("https://www.quandl.com/api/v3/datasets/"+input.database+"/"+input.dataset+".json?start_date="+input.startDate+"&collapse="+input.collapse+"&transform="+input.transform+"&api_key="+key)
