@@ -84,8 +84,8 @@ function update()
 function loadData(inputTicker, cb) {
 
 	var queryInput = {
-		ic: 'monthly',
-		isd: '2000-01-01',//'2016-01-01'
+		ic: 'daily',
+		isd: '2016-05-01',//'2016-01-01'
 		it: 'none' //transformations
 	}
 
