@@ -86,10 +86,29 @@ function loadData(inputTicker, cb) {
 	var queryInput = {
 		ic: 'monthly',
 		isd: '2000-01-01',//'2016-01-01'
-		it: 'none' //transformations 
+		it: 'none' //transformations
 	}
 
     $.get("/data?inputTicker="+inputTicker+"&inputCollapse="+queryInput.ic+"&inputStartDate="+queryInput.isd+"&inputTransform="+queryInput.it, function(data) {
 	   cb(data);
     })
+}
+function generateSMA(){
+	var priceIndex = 1; //index to use for price comparison
+	var changes = [];
+	var avgMaster = 0;
+	loadData(currentInput, function(response){
+			var data = response.dataset.data;
+
+			for(var i = 1; i < data.length; i ++)
+			{
+				changes.push(data[i][priceIndex] - data[i-1][priceIndex]);
+			}
+			for(var i = 0; i < changes.length; i ++)
+			{
+				avgMaster += changes[i];
+			}
+			avgMaster = (avgMaster / changes.length);
+			console.log(avgMaster);
+	});
 }
