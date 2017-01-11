@@ -1,7 +1,15 @@
-h4 getAndGraph client
+link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js")
+script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+script(type="text/javascript" src="https://www.gstatic.com/charts/loader.js")
 
-canvas(id="chart" width="400" height="400")
+div(class="container")
+	h4 getAndGraph client
+	br
+
+	div(class="chart" id="chartDiv")
+	br
+
+	h4(id="smaField") dataset SMA:
 
 script(src="web.js")
-script(src="Chart.bundle.js")
-script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js")

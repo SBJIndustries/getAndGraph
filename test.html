@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+		 var data = google.visualization.arrayToDataTable([
+       ['Diameter', 'Age','nothin'],
+       [1, 37,3], [2, 19.5,3], [3, 52,4], [4, 22,4], [5, 16.5,5], [6, 32.8,5], [7, 72,6]]);
+
+        var options = {
+   		 title: 'Age of sugar maples vs. trunk diameter, in inches',
+  		 hAxis: {title: 'Diameter'},
+   		 vAxis: {title: 'Age'},
+   		 legend: 'none',
+   		 trendlines: { 0: {} }    // Draw a trendline for data series 0.
+  	};
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>
+  </body>
+</html>

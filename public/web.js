@@ -1,99 +1,75 @@
 var ctx = document.getElementById("chart");
-var currentInput = "AAPL";
+var smaField = document.getElementById("smaField");
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(update);
 
-function makeChart(dataIn)
-{
-	ctx.width  = window.innerWidth;
-    var myChart = new Chart(ctx, {
-        	type: 'line',
-        	data: dataIn,
-        	label: currentInput
-	});
-}
+var currentInput = "FB";
+
+var globalTimeScale;
 
 function update()
 {
 	loadData(currentInput, function(response){
 		var data = response.dataset.data;
 		var legend = response.dataset.column_names;
-		var excludedIndex = [5,6,7,8,9,10,11,12];
 
-		console.log(legend);
+		var workingArr = [];
 
-		var inputLabels = [];
-		var inputDatasets = [];
+		workingArr.push(legend);
 
-		var constructionSet = [];
-		for(var i = 1; i < legend.length; i ++)
+		for(var i = 1; i < data.length; i ++)
 		{
-			if(!constructionSet[i-1]) {
-				constructionSet[i-1] = [];
+			var tempDate = data[i][0].split("-");
+		 	data[i][0] = new Date(tempDate[0], parseInt(tempDate[1])-1, tempDate[2]);
+		 	workingArr.push(data[i]);
+		}
+
+		console.log(workingArr);
+
+	 	var dataFinal = google.visualization.arrayToDataTable(workingArr);
+
+		var options = {
+			title: currentInput,
+			hAxis: {title: 'date'},
+			vAxis: {title: 'price'},
+			trendlines: {
+      		0: {
+				color: 'purple',
+        			lineWidth: 10,
+        			opacity: 0.2,
+	        		type: 'polynomial',
+	        		degree: 3,
+	        		visibleInLegend: true,
 			}
-			for(var j = 0; j < data.length; j ++)
-			{
-				constructionSet[i-1].push(data[j][i]);
 			}
+		 };
 
-		}
-		for(var i = 0; i < constructionSet.length; i ++)
-		{
-			if($.inArray(i + 1, excludedIndex) == -1)
-			{
-				var colors = [Math.floor((Math.random() * 255) + 1),Math.floor((Math.random() * 255) + 1),Math.floor((Math.random() * 255) + 1)];
-				inputDatasets.push({
-				    label: legend[i + 1],
-				    fill: false,
-				    lineTension: 0,
-				    backgroundColor: "rgba("+colors[0]+","+colors[1]+","+colors[2]+",0.4)",
-				    borderColor: "rgba("+colors[0]+","+colors[1]+","+colors[2]+",1)",
-				    borderCapStyle: 'butt',
-				    borderDash: [],
-				    borderDashOffset: 0.0,
-				    borderJoinStyle: 'miter',
-				    pointBorderColor: "rgba("+colors[0]+","+colors[1]+","+colors[2]+",1)",
-				    pointBackgroundColor: "#fff",
-				    pointBorderWidth: 1,
-				    pointHoverRadius: 5,
-				    pointHoverBackgroundColor: "rgba("+colors[0]+","+colors[1]+","+colors[2]+",1)",
-				    pointHoverBorderColor: "rgba("+colors[0]+","+colors[1]+","+colors[2]+",1)",
-				    pointHoverBorderWidth: 2,
-				    pointRadius: 1,
-				    pointHitRadius: 10,
-				    data: constructionSet[i],
-				    spanGaps: false,
-				 })
-			 }
-		}
-		console.log(inputDatasets);
+      var chart = new google.visualization.LineChart(document.getElementById('chartDiv'));
 
-		for(var i = 0; i < data.length; i ++)
-		{
-			inputLabels.push(data[i][0]);
-		}
+	 view  = new google.visualization.DataView(dataFinal);
+	 view.hideColumns([2,3,4,5,6,7,8,9,10,11,12]);
+
+	 chart.draw(view, options);
 
 
-		var data = {
-              labels: inputLabels,
-              datasets: inputDatasets
-          };
-
-      	makeChart(data);
       });
+
 }
 
 function loadData(inputTicker, cb) {
 
 	var queryInput = {
 		ic: 'daily',
-		isd: '2016-05-01',//'2016-01-01'
+		isd: '2016-12-30',//'2016-01-01'
 		it: 'none' //transformations
 	}
+	globalTimeScale = queryInput.ic;
 
     $.get("/data?inputTicker="+inputTicker+"&inputCollapse="+queryInput.ic+"&inputStartDate="+queryInput.isd+"&inputTransform="+queryInput.it, function(data) {
 	   cb(data);
     })
 }
-function generateSMA(){
+function generateSMA(cb){
 	var priceIndex = 1; //index to use for price comparison
 	var changes = [];
 	var avgMaster = 0;
@@ -103,12 +79,19 @@ function generateSMA(){
 			for(var i = 1; i < data.length; i ++)
 			{
 				changes.push(data[i][priceIndex] - data[i-1][priceIndex]);
+				console.log(data[i][priceIndex]);
 			}
 			for(var i = 0; i < changes.length; i ++)
 			{
 				avgMaster += changes[i];
 			}
-			avgMaster = (avgMaster / changes.length);
-			console.log(avgMaster);
+			avgMaster = (avgMaster / changes.length) * -1; //-1 because most recent data is returned first
+			cb(avgMaster);
+	});
+
+}
+function fullPage(){
+	generateSMA(function(data) {
+		smaField.innerHTML = "dataset SMA: " + data + " dollars/" + globalTimeScale;
 	});
 }
