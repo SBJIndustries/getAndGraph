@@ -4,6 +4,7 @@ google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(update);
 
 var currentInput = "FB";
+var hiddenCols = [2,3,4,5,6,7,8,9,10,11,12];
 
 var globalTimeScale;
 
@@ -28,6 +29,12 @@ function update()
 
 	 	var dataFinal = google.visualization.arrayToDataTable(workingArr);
 
+		var trendlines  = {};
+		for(var i = 0; i < 12 - hiddenCols.length ; i ++)
+		{
+			trendLines.push();
+		}
+
 		var options = {
 			title: currentInput,
 			hAxis: {title: 'date'},
@@ -47,7 +54,7 @@ function update()
       var chart = new google.visualization.LineChart(document.getElementById('chartDiv'));
 
 	 view  = new google.visualization.DataView(dataFinal);
-	 view.hideColumns([2,3,4,5,6,7,8,9,10,11,12]);
+	 view.hideColumns(hiddenCols);
 
 	 chart.draw(view, options);
 
