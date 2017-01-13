@@ -6,12 +6,14 @@ var rawHtml;
 var pageCounter = 0;
 var pages = [];
 var plainText;
+var counter = 0;
+var result = [];
 
 function crawl(cb) {
     for (var i = 0; i < urls.length; i++) {
       //console.log(urls[i].length)
         new Crawler().configure({
-                depth: 3
+                depth: 2
             }) // we are just looking to get the article code
             .crawl(urls[i], function onSuccess(page) {
                 pageCounter++;
@@ -21,7 +23,8 @@ function crawl(cb) {
                 for(var i = 0; i< urls.length; i++){
                   for(var j = 0; j < crawledUrls.length;j++){
                     if(urls[i]==crawledUrls[j].slice(0,urls[i].length)){
-                      crawledUrls.splice( j, 1 );
+                      console.log(crawledUrls[j])
+                      counter++;
                     }
                   }
 
@@ -34,9 +37,11 @@ function crawl(cb) {
 
 
                 console.log(crawledUrls);
+                console.log("the counter is "+ counter);
+                console.log("array length is "+ crawledUrls.length)
+                console.log("the difference is "+ (crawledUrls.length - counter))
 
-
-                console.log('All crawling finished');
+                //console.log('All crawling finished');
             });
     }
 }
