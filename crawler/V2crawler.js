@@ -1,24 +1,29 @@
 var Crawler = require('js-crawler');
 
-var urls = ["http://www.kentdenver.org/", "http://www.cnet.com"];
+var urls = ["http://www.kentdenver.org/"];
 var result = [];
 
 var counter = 0;
+function crawl(cb){
 
-for (var i = 0; i < urls.length; i++) {
-
-    new Crawler().configure({
-            depth: 1
-        }).crawl(urls[i], function onSuccess(page) {
-            for (var i = 0; i < urls.length; i++) {
-                if (urls[i] == page.url.slice(0, urls[i].length)) {
-                    result.push(page.url);
-                    //counter++;
-                }
-            }
-            console.log(result);
-        });
+	for (let i = 0; i < urls.length; i++) {
+		console.log(urls[i].length);
+	    new Crawler().configure({
+	            depth: 2
+	        }).crawl(urls[i], function onSuccess(page) {
+	                if (urls[i] == page.url.slice(0, urls[i].length)) {
+	                    result.push(page.url);
+	                    counter++;
+	                }
+			  cb(result);
+	      });
+	}
 }
+
+crawl (function(data) {
+	console.log(data);
+});
+
 
 
 //, null, function onAllFinished(crawledUrls) {
