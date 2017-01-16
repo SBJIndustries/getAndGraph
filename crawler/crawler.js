@@ -18,7 +18,7 @@ function crawl(cb) {
                 depth: 2
             })
             .crawl(urls[i], function onSuccess(page) {
-                if (page.url.search(urls[i].slice(11,urls[i].length-5))>0 || (termsOn && new RegExp(terms.join("|")).test(page.url))){// this just checks if main part of the urls is in the searched urls
+                if (page.url.search(urls[i].slice(11,urls[i].length))>0 || (termsOn && new RegExp(terms.join("|")).test(page.url))){// this just checks if main part of the urls is in the searched urls
                     console.log(page.url);                                                    //this i needs to be changed to a j that loops through the entire terms list everytime a url is searched
                     pages.push(page.content);
                     pageCounter++;
