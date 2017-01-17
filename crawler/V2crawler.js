@@ -1,52 +1,50 @@
 var Crawler = require('js-crawler');
+var colors = require('colors');
 
-var urls = ["http://www.kentdenver.org/"];
-var result = [];
-
+var urls = ["http://www.apple.com/"];
+var termsOn = true;
+var terms = ["mac"];
+var rawHtml;
+var deep = 2;
+var pageCounter = 0;
+var pages = [];
+var plainText;
 var counter = 0;
-function crawl(cb){
 
-	for (let i = 0; i < urls.length; i++) {
-		console.log(urls[i].length);
-	    new Crawler().configure({
-	            depth: 2
-	        }).crawl(urls[i], function onSuccess(page) {
-	                if (urls[i] == page.url.slice(0, urls[i].length)) {
-	                    result.push(page.url);
-	                    counter++;
-	                }
-			  cb(result);
-	      });
-	}
+function crawl(cb) {
+    for (let i = 0; i < urls.length; i++) {
+
+        new Crawler().configure({
+
+                depth: 2// maybe we want to vary the depth depending on what the program finds
+
+            })
+            .crawl(urls[i], function onSuccess(page) {
+                if (page.url.search(urls[i].slice(11,urls[i].length-1))>0){
+								 	if (termsOn && new RegExp(terms.join("|")).test(page.url)){
+										urls.push(page.url);
+									}
+                    console.log(page.url);
+                    pages.push(page.content);
+                    pageCounter++;
+                }
+            }, null, function onAllFinished(crawledUrls) {
+                //cb(pages);
+                //console.log(pageCounter)
+
+                console.log('Done'.blue);
+								console.log(urls)
+
+            });
+    }
 }
 
-crawl (function(data) {
-	console.log(data);
+crawl(function(pagesIn) {
+    for (var i = 0; i < pagesIn.length; i++) {
+        var cheerio = require('cheerio'),
+            $ = cheerio.load(pagesIn[i]);
+        plainText += $('article').text();
+	   console.log(plainText);
+
+    }
 });
-
-
-
-//, null, function onAllFinished(crawledUrls) {
-// for (var i = 0; i < urls.length; i++) {
-//     for (var j = 0; j < crawledUrls.length; j++) {
-//         if (urls[i] == crawledUrls[j].slice(0, urls[i].length)) {
-//             console.log(crawledUrls[j]);
-//             counter++;
-//         }
-//     }
-//
-// }
-
-
-
-//console.log(crawledUrls[j]); // we want to store this value
-
-
-//console.log(crawledUrls);
-// console.log("the counter is " + counter);
-// console.log("array length is " + crawledUrls.length)
-// console.log("the difference is " + (crawledUrls.length - counter))
-
-//console.log('All crawling finished');
-//    });
-//}

@@ -1,9 +1,9 @@
 var Crawler = require('js-crawler');
 var colors = require('colors');
 
-var urls = ["http://www.cnet.com"];
+var urls = ["http://www.apple.com"];
 var termsOn = true;
-var terms = ["news","apple"];
+var terms = ["mac"];
 var rawHtml;
 
 var pageCounter = 0;
@@ -15,7 +15,9 @@ function crawl(cb) {
     for (let i = 0; i < urls.length; i++) {
 
         new Crawler().configure({
+
                 depth: 2// maybe we want to vary the depth depending on what the program finds
+
             })
             .crawl(urls[i], function onSuccess(page) {
                 if (page.url.search(urls[i].slice(11,urls[i].length))>0 || (termsOn && new RegExp(terms.join("|")).test(page.url))){// this just checks if main part of the urls is in the searched urls
@@ -25,7 +27,8 @@ function crawl(cb) {
                 }
             }, null, function onAllFinished(crawledUrls) {
                 cb(pages);
-                console.log('Done'.red);
+              //  console.log(pageCounter)
+                console.log('Done'.blue);
 
             });
     }
