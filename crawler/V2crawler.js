@@ -2,6 +2,8 @@ var Crawler = require('js-crawler');
 var colors = require('colors');
 
 var urls = ["http://www.apple.com/"];
+var foundUrls = [];
+var searchedUrls = [];
 var termsOn = true;
 var terms = ["mac"];
 var rawHtml;
@@ -16,35 +18,54 @@ function crawl(cb) {
 
         new Crawler().configure({
 
-                depth: 2// maybe we want to vary the depth depending on what the program finds
+                depth: 2 // maybe we want to vary the depth depending on what the program finds
 
             })
             .crawl(urls[i], function onSuccess(page) {
-                if (page.url.search(urls[i].slice(11,urls[i].length-1))>0){
-								 	if (termsOn && new RegExp(terms.join("|")).test(page.url)){
-										urls.push(page.url);
-									}
-                    console.log(page.url);
-                    pages.push(page.content);
+                if (page.url.search(urls[i].slice(11, urls[i].length - 1)) > 0) {
+                    if (termsOn && new RegExp(terms.join("|")).test(page.url)) {
+                        foundUrls.push(page.url);
+                    }
+                    searchedUrls.push(page.url);
+                  //  pages.push(page.content);
                     pageCounter++;
                 }
             }, null, function onAllFinished(crawledUrls) {
                 //cb(pages);
                 //console.log(pageCounter)
-
-                console.log('Done'.blue);
-								console.log(urls)
+                reCrawl(foundUrls);
+              //  console.log('Done'.blue);
+              //  console.log(urls)
 
             });
     }
 }
+
+function reCrawl(foundUrls){
+  for (let j = 1; j < foundUrls.length; j++) {
+      new Crawler().configure({
+              depth: 2
+          }).crawl(foundUrls[j], function onSuccess(page) {
+           if (new RegExp(terms.join("|")).test(page.url)){
+              searchedUrls.push(page.url);
+            }
+           })
+  }
+
+}
+
+function urlCheck(){
+    
+
+}
+
 
 crawl(function(pagesIn) {
     for (var i = 0; i < pagesIn.length; i++) {
         var cheerio = require('cheerio'),
             $ = cheerio.load(pagesIn[i]);
         plainText += $('article').text();
-	   console.log(plainText);
+        console.log(plainText);
 
     }
 });
