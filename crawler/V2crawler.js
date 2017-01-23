@@ -1,7 +1,7 @@
 var Crawler = require('js-crawler');
 var colors = require('colors');
 
-var urls = ["http://www.cnet.com/"];
+var urls = ["http://www.wsj.com/"];
 var termsOn = false;
 var terms = ["money"];
 var deep = 2;
@@ -46,6 +46,8 @@ crawl(function(pagesIn) {
         plainText.push($('article p'));
     }
     for (var i = 0; i < plainText.length; i ++) {
-	    console.log(plainText[i].text());
+	    allContent += plainText[i].text();
     }
+    console.log(allContent);
+
 });
