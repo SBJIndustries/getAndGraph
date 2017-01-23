@@ -29,6 +29,7 @@ function crawl(cb) {
                 cb(pages);
               //  console.log(pageCounter)
                 console.log('Done'.blue);
+
             });
     }
 }
